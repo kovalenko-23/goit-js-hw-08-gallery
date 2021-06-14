@@ -64,5 +64,64 @@ const galleryItems = [
   },
 ];
 
-const galleryEl = document.querySelector('.js-lightbox');
-console.log(galleryEl);
+const galleryEl = document.querySelector('.gallery.js-gallery');
+const lightBoxEl = document.querySelector('.lightbox.js-lightbox');
+const modalBtn = lightBoxEl.querySelector('button[data-action="close-lightbox"]');
+const itemImg = lightBoxEl.querySelector('.lightbox__image');
+
+
+const stringOfGalleryItems = createGalleryItems(galleryItems).join('');
+galleryEl.insertAdjacentHTML("beforeend", stringOfGalleryItems);
+
+
+function createGalleryItems(galleryItems) {
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `<li class='gallery__item'><a class='gallery__link'><img class='gallery__image' src='${preview}' alt='${description}'/img></a></li>`;
+    });
+}
+
+galleryEl.addEventListener('click', ctreateLightBox);
+
+function ctreateLightBox(event) {
+  const isGallaryImage = event.target.classList.contains('gallery__image');
+ 
+  if (!isGallaryImage) {
+    return;
+  }
+
+  if (lightBoxEl.classList.contains('is-open')) {
+    modalBtn.classList.add('.lightbox__button');
+  }
+
+  lightBoxEl.classList.add('is-open');
+  
+  if (lightBoxEl.classList.contains('is-open')) {
+    getOriginalImage(galleryItems);
+  }
+
+    function getOriginalImage(galleryItems) {
+    const gallerySrc = event.target.src;
+
+      galleryItems.map(({preview, original, description}) => {
+        if (gallerySrc === preview) {
+          itemImg.setAttribute('src', `${original}`);
+          itemImg.setAttribute('alt', `${description}`);
+        }
+      
+      }
+    )
+  }
+  
+}
+
+modalBtn.addEventListener('click', closeModalOnCLick);
+
+function closeModalOnCLick(e) {
+  lightBoxEl.classList.remove('is-open');
+  itemImg.setAttribute('src', '');
+  itemImg.setAttribute('alt', '');
+}
+
+
+  
