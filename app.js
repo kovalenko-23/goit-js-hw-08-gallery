@@ -77,13 +77,14 @@ galleryEl.insertAdjacentHTML("beforeend", stringOfGalleryItems);
 function createGalleryItems(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
-      return `<li class='gallery__item'><a class='gallery__link'><img class='gallery__image' src='${preview}' alt='${description}'/img></a></li>`;
+      return `<li class='gallery__item'><a class='gallery__link' href='${original}'><img class='gallery__image' src='${preview}' data-source='${original}' alt='${description}'/img></a></li>`;
     });
 }
 
 galleryEl.addEventListener('click', ctreateLightBox);
 
 function ctreateLightBox(event) {
+  event.preventDefault();
   const isGallaryImage = event.target.classList.contains('gallery__image');
  
   if (!isGallaryImage) {
@@ -111,7 +112,7 @@ function ctreateLightBox(event) {
       
       }
     )
-  }
+  } 
   
 }
 
