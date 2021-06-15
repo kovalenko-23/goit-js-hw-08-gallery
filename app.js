@@ -68,6 +68,8 @@ const galleryEl = document.querySelector('.gallery.js-gallery');
 const lightBoxEl = document.querySelector('.lightbox.js-lightbox');
 const modalBtn = lightBoxEl.querySelector('button[data-action="close-lightbox"]');
 const itemImg = lightBoxEl.querySelector('.lightbox__image');
+const overlay = lightBoxEl.querySelector('.lightbox__overlay');
+
 
 
 const stringOfGalleryItems = createGalleryItems(galleryItems).join('');
@@ -81,9 +83,10 @@ function createGalleryItems(galleryItems) {
     });
 }
 
-galleryEl.addEventListener('click', ctreateLightBox);
+galleryEl.addEventListener('click', onOpenModal);
 
-function ctreateLightBox(event) {
+function onOpenModal(event) {
+  window.addEventListener('keydown', onEscKeyPress);
   event.preventDefault();
   const isGallaryImage = event.target.classList.contains('gallery__image');
  
@@ -103,13 +106,10 @@ function ctreateLightBox(event) {
 
     function getOriginalImage(galleryItems) {
     const gallerySrc = event.target.src;
-
-      galleryItems.map(({preview, original, description}) => {
-        if (gallerySrc === preview) {
-          itemImg.setAttribute('src', `${original}`);
-          itemImg.setAttribute('alt', `${description}`);
+      galleryItems.findIndex(({ preview, original, description }) => {
+        if (preview === gallerySrc) {
+          setImgAttribute(`${ original }`, `${description}`)
         }
-      
       }
     )
   } 
@@ -117,12 +117,20 @@ function ctreateLightBox(event) {
 }
 
 modalBtn.addEventListener('click', closeModalOnCLick);
+overlay.addEventListener('click', closeModalOnCLick);
+
+function setImgAttribute(src, alt) { 
+  itemImg.setAttribute('src', `${src}`);
+  itemImg.setAttribute('alt', `${alt}`);
+}
 
 function closeModalOnCLick(e) {
   lightBoxEl.classList.remove('is-open');
-  itemImg.setAttribute('src', '');
-  itemImg.setAttribute('alt', '');
+  setImgAttribute('', '')
 }
 
-
-  
+function onEscKeyPress(e) {
+  if (e.code === 'Escape') {
+    closeModalOnCLick();
+  }
+}
